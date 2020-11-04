@@ -1,21 +1,34 @@
 package github.com.vangreat.pre_project_web.controller;
 
+
 import github.com.vangreat.pre_project_web.model.User;
+import github.com.vangreat.pre_project_web.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
-public class UsersController {
+public class PagesController {
 
-    @GetMapping()
+    @Autowired
+    private UserService userService;
+
+    @GetMapping
+    public String loginIn() {
+        return "login";
+    }
+
+    @RequestMapping("/main")
     public String getUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         model.addAttribute("user", user);
-        return "/admin_panel";
+        model.addAttribute("userNew", new User());
+        model.addAttribute("users", userService.getAllUsers());
+        return "main";
     }
 }
